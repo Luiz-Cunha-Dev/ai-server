@@ -1,0 +1,29 @@
+﻿version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-server
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+
+  server-ai:
+    build: .
+    container_name: server-ai
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MODEL=gemma2:2b
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - ollama
+    volumes:
+      - .env:/usr/src/app/.env
+
+volumes:
+  ollama_data:
