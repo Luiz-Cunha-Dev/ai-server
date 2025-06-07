@@ -52,6 +52,63 @@ app.post('/chat', async (req, res) => {
   }
 })
 
+// Nova rota para chat com streaming
+app.post('/chat/stream', async (req, res) => {
+  try {
+    const { message } = req.body
+    
+    // Configurar headers para SSE (Server-Sent Events)
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Cache-Control'
+    })
+    
+    // Função para enviar dados via SSE
+    const sendEvent = (data) => {
+      res.write(`data: ${JSON.stringify(data)}\n\n`)
+    }
+    
+    // Iniciar streaming com Ollama
+    const stream = await ollama.chat({
+      model: process.env.MODEL || 'gemma3:1b',
+      messages: [{ role: 'user', content: message }],
+      stream: true,
+    })
+    
+    // Processar cada chunk do stream
+    for await (const chunk of stream) {
+      if (chunk.message?.content) {
+        sendEvent({
+          type: 'chunk',
+          content: chunk.message.content
+        })
+      }
+      
+      // Se for o último chunk
+      if (chunk.done) {
+        sendEvent({
+          type: 'done',
+          content: ''
+        })
+        break
+      }
+    }
+    
+    res.end()
+    
+  } catch (error) {
+    console.error('Erro ao chamar o Ollama stream:', error)
+    res.write(`data: ${JSON.stringify({
+      type: 'error',
+      error: 'Erro ao gerar resposta com o modelo'
+    })}\n\n`)
+    res.end()
+  }
+})
+
 // Aguarda Ollama estar disponível antes de iniciar o servidor
 waitForOllama()
   .then(() => {

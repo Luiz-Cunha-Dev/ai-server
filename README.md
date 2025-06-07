@@ -256,17 +256,3 @@ docker exec ollama-server ollama pull gemma2:2b
 ## 📝 Licença
 
 Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-## 🎯 Próximos Passos
-
-- [ ] Adicionar autenticação JWT
-- [ ] Implementar rate limiting
-- [ ] Adicionar suporte a múltiplos modelos
-- [ ] Interface web para chat
-- [ ] Métricas e monitoring
-- [ ] Testes automatizados
-- [ ] Deploy para produção
-
----
-
-**Desenvolvido com ❤️ usando Node.js, Express e Ollama**
