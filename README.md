@@ -1,38 +1,38 @@
 # 🤖 Server AI
 
-API simples usando Node.js, Express e Ollama para chat com modelos de IA localmente.
+Simple API using Node.js, Express, and Ollama for local AI chat models.
 
-## ✨ Características
+## ✨ Features
 
-- **🚀 API Express**: Endpoints para chat normal e streaming
-- **🧠 Ollama**: Execução local de modelos LLM
-- **🐳 Docker Compose**: Setup completo com containers
-- **🌐 CORS**: Requisições cross-origin habilitadas
-- **⏳ Auto-wait**: Aguarda Ollama estar disponível antes de iniciar
+- **🚀 Express API**: Endpoints for normal and streaming chat
+- **🧠 Ollama**: Local LLM model execution
+- **🐳 Docker Compose**: Complete setup with containers
+- **🌐 CORS**: Cross-origin requests enabled
+- **⏳ Auto-wait**: Waits for Ollama to be available before starting
 
-## 📦 Estrutura
+## 📦 Structure
 
 ```
 server-ai/
 ├── src/
-│   └── index.js           # API Express
+│   └── index.js           # Express API
 ├── docker-compose.yml     # Containers
-├── Dockerfile            # Imagem Node.js
-├── package.json          # Dependências
-└── README.md            # Este arquivo
+├── Dockerfile             # Node.js image
+├── package.json           # Dependencies
+└── README.md              # This file
 ```
 
-## 🛠️ Tecnologias
+## 🛠️ Technologies
 
 - **Node.js 18+** + **Express** + **Ollama**
 - **Docker & Docker Compose**
 - **CORS** + **dotenv**
 
-## ⚡ Como usar
+## ⚡ How to use
 
-### 1. Criar arquivo de ambiente
+### 1. Create environment file
 
-Crie `.env` na raiz:
+Create a `.env` file in the root:
 
 ```env
 PORT=3000
@@ -40,72 +40,75 @@ MODEL=gemma2:2b
 OLLAMA_HOST=http://ollama:11434
 ```
 
-### 2. Iniciar
+### 2. Start
 
-```powershell
+```bash
 docker-compose up -d
 ```
 
-### 3. Testar
+### 3. Test
 
-```powershell
-# Chat normal
-$body = @{ message = "Olá!" } | ConvertTo-Json
-Invoke-RestMethod -Uri "http://localhost:3000/chat" -Method POST -Body $body -ContentType "application/json"
+```bash
+# Normal chat
+curl -X POST http://localhost:3000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello!"}'
 
-# Chat streaming
-Invoke-RestMethod -Uri "http://localhost:3000/chat/stream" -Method POST -Body $body -ContentType "application/json"
+# Streaming chat
+curl -X POST http://localhost:3000/chat/stream \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello!"}'
 ```
 
 ## 🔌 API
 
 ### POST /chat
-Chat normal - retorna resposta completa
+Normal chat - returns the full response
 
 ### POST /chat/stream  
-Chat streaming - retorna resposta em tempo real via Server-Sent Events
+Streaming chat - returns real-time response via Server-Sent Events
 
 **Request:**
 ```json
 {
-  "message": "Sua pergunta"
+  "message": "Your question"
 }
 ```
 
-## 🔧 Comandos úteis
+## 🔧 Useful commands
 
-```powershell
-# Ver status
+```bash
+# Check status
 docker-compose ps
 
-# Ver logs
+# View logs
 docker-compose logs -f
 
-# Modelos instalados
+# List installed models
 docker exec ollama-server ollama list
 
-# Baixar modelo
+# Download model
 docker exec ollama-server ollama pull gemma2:2b
 ```
 
-## 🚨 Problemas comuns
+## 🚨 Common issues
 
-### Container não inicia
-```powershell
+### Container does not start
+```bash
 docker-compose down --remove-orphans
 docker-compose build --no-cache
 docker-compose up -d
 ```
 
-### Modelo não responde
-```powershell
-# Verificar se modelo está baixado
+### Model does not respond
+```bash
+# Check if the model is downloaded
 docker exec ollama-server ollama list
 
-# Baixar manualmente
+# Download manually
 docker exec ollama-server ollama pull gemma2:2b
 ```
 
-## 📝 Licença
+## 📝 License
 
 MIT License
